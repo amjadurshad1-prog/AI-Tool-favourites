@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Tools Favourites</title>
+<meta name="description" content="Quick-launch your favourite AI tools from one place. Works on mobile and desktop." />
+<link rel="manifest" href="#" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f3;
+    --bg3: #ececea;
+    --text: #1a1a18;
+    --text2: #6b6b67;
+    --text3: #a3a39f;
+    --border: rgba(0,0,0,0.1);
+    --border2: rgba(0,0,0,0.18);
+    --info-bg: #e6f1fb;
+    --info-text: #185fa5;
+    --info-border: rgba(24,95,165,0.3);
+    --danger: #e24b4a;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --radius-xl: 18px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg2: #2a2a28;
+      --bg3: #333331;
+      --text: #f0efe8;
+      --text2: #a3a39f;
+      --text3: #6b6b67;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.18);
+      --info-bg: #0c3455;
+      --info-text: #85b7eb;
+      --info-border: rgba(133,183,235,0.3);
+      --danger: #f09595;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg2);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    background: var(--bg);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 1.25rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header h1 {
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  header h1 i { font-size: 20px; color: var(--info-text); }
+  #count-label { font-size: 12px; color: var(--text3); }
+  main { max-width: 800px; margin: 0 auto; padding: 1.25rem 1rem 5rem; }
+  .cats {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.1rem;
+  }
+  .cat-btn {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: inherit;
+  }
+  .cat-btn.active, .cat-btn:hover {
+    background: var(--info-bg);
+    border-color: var(--info-border);
+    color: var(--info-text);
+  }
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0 12px;
+    margin-bottom: 1rem;
+  }
+  .search-bar i { color: var(--text3); font-size: 16px; }
+  .search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--text);
+    padding: 10px 0;
+    width: 100%;
+    font-family: inherit;
+  }
+  .search-bar input::placeholder { color: var(--text3); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 10px;
+  }
+  .card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: border-color .15s, transform .1s;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .card:hover { border-color: var(--border2); transform: translateY(-1px); }
+  .card:active { transform: scale(0.97); }
+  .card .emoji { font-size: 24px; line-height: 1; margin-bottom: 2px; }
+  .card .name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .url { font-size: 11px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card .tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 10px; margin-top: 3px; background: var(--bg2); color: var(--text2); width: fit-content; }
+  .card .del {
+    position: absolute; top: 7px; right: 7px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text3); font-size: 14px;
+    opacity: 0; transition: opacity .15s;
+    padding: 3px; border-radius: 6px;
+    line-height: 1;
+  }
+  .card:hover .del { opacity: 1; }
+  .card .del:hover { color: var(--danger); background: var(--bg2); }
+  .add-card {
+    background: transparent;
+    border: 0.5px dashed var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 14px 12px;
+    cursor: pointer;
+    color: var(--text3);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 95px;
+    transition: all .15s;
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .add-card i { font-size: 22px; }
+  .add-card:hover { background: var(--bg); border-color: var(--info-border); color: var(--info-text); }
+  .empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text3);
+    font-size: 14px;
+  }
+  .empty i { font-size: 32px; display: block; margin-bottom: 8px; }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: var(--info-text);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 52px; height: 52px;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transition: transform .15s;
+    z-index: 20;
+  }
+  .fab:active { transform: scale(0.93); }
+
+  /* Modal */
+  .modal-bg {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0;
+  }
+  @media (min-width: 500px) {
+    .modal-bg { align-items: center; padding: 1rem; }
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 1.5rem 1.25rem 2rem;
+    width: 100%;
+    max-width: 400px;
+    animation: slideUp .2s ease;
+  }
+  @media (min-width: 500px) {
+    .modal { border-radius: var(--radius-xl); padding: 1.5rem; }
+  }
+  @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 1.25rem; }
+  @media (min-width: 500px) { .modal-handle { display: none; } }
+  .modal h2 { font-size: 16px; font-weight: 600; margin-bottom: 1.1rem; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .field input {
+    width: 100%;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    font-family: inherit;
+    transition: border-color .15s;
+  }
+  .field input:focus { border-color: var(--info-border); }
+  .emoji-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ep {
+    background: none;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 5px 8px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background .1s;
+    line-height: 1;
+  }
+  .ep:hover, .ep.sel { background: var(--info-bg); border-color: var(--info-border); }
+  .mbtns { display: flex; gap: 8px; margin-top: 1.1rem; }
+  .mbtns button {
+    flex: 1;
+    padding: 10px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: opacity .15s;
+  }
+  .mbtns button:active { opacity: 0.75; }
+  #cancel-btn { background: var(--bg2); border: 0.5px solid var(--border); color: var(--text2); }
+  #save-btn { background: var(--info-text); border: none; color: #fff; }
+  .toast {
+    position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%);
+    background: var(--text); color: var(--bg);
+    padding: 8px 18px; border-radius: 20px; font-size: 13px;
+    opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><i class="ti ti-rocket"></i> AI Tools Favourites</h1>
+  <span id="count-label"></span>
+</header>
+
+<main>
+  <div class="search-bar">
+    <i class="ti ti-search"></i>
+    <input id="search" type="text" placeholder="Search tools…" />
+  </div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<button class="fab" id="fab-btn" title="Add tool">
+  <i class="ti ti-plus"></i>
+</button>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <h2 id="modal-title">Add tool</h2>
+    <div class="field">
+      <label>Icon</label>
+      <div class="emoji-row" id="emoji-row"></div>
+    </div>
+    <div class="field">
+      <label>Tool name</label>
+      <input id="f-name" type="text" placeholder="e.g. ChatGPT" autocomplete="off" />
+    </div>
+    <div class="field">
+      <label>URL</label>
+      <input id="f-url" type="url" placeholder="https://..." autocomplete="off" />
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <input id="f-cat" type="text" placeholder="e.g. Chat, Image, Coding…" autocomplete="off" />
+    </div>
+    <div class="mbtns">
+      <button id="cancel-btn">Cancel</button>
+      <button id="save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const EMOJIS = ['🤖','✨','🧠','💬','🎨','🖼️','🔍','📝','💻','🎵','🎬','📊','🌐','⚡','🔧','📧','📷','🗂️','🧩','🚀','🎯','🛠️','📱','🌟','🔮'];
+const DEFAULTS = [
+  {id:'1',name:'ChatGPT',url:'https://chat.openai.com',emoji:'🤖',cat:'Chat'},
+  {id:'2',name:'Claude',url:'https://claude.ai',emoji:'✨',cat:'Chat'},
+  {id:'3',name:'Gemini',url:'https://gemini.google.com',emoji:'🌟',cat:'Chat'},
+  {id:'4',name:'Midjourney',url:'https://midjourney.com',emoji:'🎨',cat:'Image'},
+  {id:'5',name:'Perplexity',url:'https://perplexity.ai',emoji:'🔍',cat:'Research'},
+  {id:'6',name:'GitHub Copilot',url:'https://github.com/features/copilot',emoji:'💻',cat:'Coding'},
+  {id:'7',name:'Runway',url:'https://runwayml.com',emoji:'🎬',cat:'Video'},
+  {id:'8',name:'ElevenLabs',url:'https://elevenlabs.io',emoji:'🎵',cat:'Audio'},
+];
+
+let tools = [], activeCat = 'All', editId = null, selEmoji = EMOJIS[0], searchQ = '';
+
+const grid = document.getElementById('grid');
+const catsEl = document.getElementById('cats');
+const countEl = document.getElementById('count-label');
+const modalBg = document.getElementById('modal-bg');
+const emojiRow = document.getElementById('emoji-row');
+const searchEl = document.getElementById('search');
+
+function load() {
+  try {
+    const saved = localStorage.getItem('ai-fav-tools');
+    tools = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULTS));
+  } catch(e) {
+    tools = JSON.parse(JSON.stringify(DEFAULTS));
+  }
+  render();
+}
+
+function save() {
+  try { localStorage.setItem('ai-fav-tools', JSON.stringify(tools)); } catch(e) {}
+}
+
+function getCats() {
+  const s = new Set(tools.map(t => t.cat || 'Other'));
+  return ['All', ...s];
+}
+
+function render() {
+  let list = tools;
+  if (activeCat !== 'All') list = list.filter(t => (t.cat || 'Other') === activeCat);
+  if (searchQ) list = list.filter(t => t.name.toLowerCase().includes(searchQ.toLowerCase()) || (t.url||'').toLowerCase().includes(searchQ.toLowerCase()));
+
+  countEl.textContent = tools.length + ' tools';
+
+  catsEl.innerHTML = '';
+  getCats().forEach(c => {
+    const b = document.createElement('button');
+    b.className = 'cat-btn' + (c === activeCat ? ' active' : '');
+    b.textContent = c;
+    b.onclick = () => { activeCat = c; render(); };
+    catsEl.appendChild(b);
+  });
+
+  grid.innerHTML = '';
+
+  if (list.length === 0) {
+    const e = document.createElement('div');
+    e.className = 'empty';
+    e.innerHTML = '<i class="ti ti-bookmark"></i>No tools found';
+    grid.appendChild(e);
+  }
+
+  list.forEach(t => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.setAttribute('role', 'link');
+    c.setAttribute('tabindex', '0');
+    c.innerHTML = `
+      <span class="emoji">${t.emoji || '🔧'}</span>
+      <span class="name">${t.name}</span>
+      <span class="url">${(t.url||'').replace(/^https?:\/\//,'')}</span>
+      ${t.cat ? `<span class="tag">${t.cat}</span>` : ''}
+      <button class="del" title="Remove" onclick="removeT('${t.id}',event)"><i class="ti ti-x"></i></button>
+    `;
+    c.onclick = (e) => { if (!e.target.closest('.del')) openTool(t.url); };
+    c.onkeydown = (e) => { if (e.key === 'Enter') openTool(t.url); };
+    grid.appendChild(c);
+  });
+
+  const add = document.createElement('button');
+  add.className = 'add-card';
+  add.innerHTML = '<i class="ti ti-plus"></i><span>Add tool</span>';
+  add.onclick = () => openModal();
+  grid.appendChild(add);
+}
+
+function openTool(url) {
+  if (!url) return;
+  const u = url.match(/^https?:\/\//) ? url : 'https://' + url;
+  window.open(u, '_blank', 'noopener');
+}
+
+function removeT(id, e) {
+  e.stopPropagation();
+  tools = tools.filter(t => t.id !== id);
+  save(); render();
+  showToast('Removed');
+}
+
+function openModal(id) {
+  editId = id || null;
+  const t = id ? tools.find(x => x.id === id) : null;
+  document.getElementById('modal-title').textContent = id ? 'Edit tool' : 'Add tool';
+  document.getElementById('f-name').value = t ? t.name : '';
+  document.getElementById('f-url').value = t ? t.url : '';
+  document.getElementById('f-cat').value = t ? t.cat : '';
+  selEmoji = t ? t.emoji : EMOJIS[0];
+
+  emojiRow.innerHTML = '';
+  EMOJIS.forEach(em => {
+    const b = document.createElement('button');
+    b.className = 'ep' + (em === selEmoji ? ' sel' : '');
+    b.textContent = em;
+    b.type = 'button';
+    b.onclick = () => {
+      selEmoji = em;
+      emojiRow.querySelectorAll('.ep').forEach(x => x.classList.remove('sel'));
+      b.classList.add('sel');
+    };
+    emojiRow.appendChild(b);
+  });
+
+  modalBg.classList.add('open');
+  setTimeout(() => document.getElementById('f-name').focus(), 100);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+document.getElementById('cancel-btn').onclick = () => modalBg.classList.remove('open');
+document.getElementById('fab-btn').onclick = () => openModal();
+modalBg.onclick = (e) => { if (e.target === modalBg) modalBg.classList.remove('open'); };
+
+document.getElementById('save-btn').onclick = () => {
+  const name = document.getElementById('f-name').value.trim();
+  let url = document.getElementById('f-url').value.trim();
+  const cat = document.getElementById('f-cat').value.trim() || 'Other';
+  if (!name) { document.getElementById('f-name').focus(); return; }
+  if (url && !url.match(/^https?:\/\//)) url = 'https://' + url;
+
+  if (editId) {
+    const t = tools.find(x => x.id === editId);
+    if (t) { t.name = name; t.url = url; t.cat = cat; t.emoji = selEmoji; }
+  } else {
+    tools.push({ id: Date.now().toString(), name, url, cat, emoji: selEmoji });
+  }
+  save(); render();
+  modalBg.classList.remove('open');
+  showToast(editId ? 'Updated!' : 'Added!');
+};
+
+document.getElementById('f-name').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('save-btn').click(); });
+searchEl.addEventListener('input', e => { searchQ = e.target.value; render(); });
+
+load();
+</script>
+</body>
+</html>
