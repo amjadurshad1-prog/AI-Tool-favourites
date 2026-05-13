@@ -1,114 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>AI Tools Favourites</title>
-<meta name="description" content="Quick-launch your favourite AI tools from one place. Works on mobile and desktop." />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+<meta name="description" content="Quick-launch your favourite AI tools from one place. Works on mobile and desktop."/>
+<meta name="theme-color" content="#6c63ff"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="AI Tools"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="https://emojicdn.elk.sh/🚀?style=apple"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
 <style>
-  :root {
-    --bg:#ffffff;--bg2:#f5f5f3;--bg3:#ececea;--text:#1a1a18;--text2:#6b6b67;--text3:#a3a39f;
-    --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
-    --info-bg:#e6f1fb;--info-text:#185fa5;--info-border:rgba(24,95,165,0.3);
-    --danger:#e24b4a;--hot-bg:#faeeda;--hot-text:#854f0b;
-    --radius:10px;--radius-lg:14px;--radius-xl:18px;
-  }
-  @media(prefers-color-scheme:dark){
-    :root{
-      --bg:#1e1e1c;--bg2:#2a2a28;--bg3:#333331;--text:#f0efe8;--text2:#a3a39f;--text3:#6b6b67;
-      --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
-      --info-bg:#0c3455;--info-text:#85b7eb;--info-border:rgba(133,183,235,0.3);
-      --danger:#f09595;--hot-bg:#412402;--hot-text:#fac775;
-    }
-  }
+  :root{--bg:#ffffff;--bg2:#f5f5f3;--bg3:#ececea;--text:#1a1a18;--text2:#6b6b67;--text3:#a3a39f;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);--info-bg:#e6f1fb;--info-text:#185fa5;--info-border:rgba(24,95,165,0.3);--danger:#e24b4a;--hot-bg:#faeeda;--hot-text:#854f0b;--radius:10px;--radius-lg:14px;--radius-xl:18px;}
+  @media(prefers-color-scheme:dark){:root{--bg:#1e1e1c;--bg2:#2a2a28;--bg3:#333331;--text:#f0efe8;--text2:#a3a39f;--text3:#6b6b67;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);--info-bg:#0c3455;--info-text:#85b7eb;--info-border:rgba(133,183,235,0.3);--danger:#f09595;--hot-bg:#412402;--hot-text:#fac775;}}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text);min-height:100vh}
-  header{background:var(--bg);border-bottom:0.5px solid var(--border);padding:0 1.25rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
-  header h1{font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px}
-  header h1 i{font-size:20px;color:var(--info-text)}
-  #count-label{font-size:12px;color:var(--text3)}
-  main{max-width:820px;margin:0 auto;padding:1.25rem 1rem 5rem}
-  .search-bar{display:flex;align-items:center;gap:8px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:0 12px;margin-bottom:1rem}
-  .search-bar i{color:var(--text3);font-size:16px}
-  .search-bar input{border:none;outline:none;background:transparent;font-size:14px;color:var(--text);padding:10px 0;width:100%;font-family:inherit}
-  .search-bar input::placeholder{color:var(--text3)}
-  .cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem}
-  .cat-btn{background:var(--bg);border:0.5px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit}
-  .cat-btn.active,.cat-btn:hover{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text)}
-  .section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin:1.25rem 0 .6rem}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}
-  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 12px;cursor:pointer;transition:border-color .15s,transform .1s;display:flex;flex-direction:column;gap:5px;position:relative;-webkit-tap-highlight-color:transparent}
-  .card:hover{border-color:var(--border2);transform:translateY(-1px)}
-  .card:active{transform:scale(0.97)}
-  .card .emoji{font-size:24px;line-height:1;margin-bottom:2px}
-  .card .name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .card .url{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .card .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-top:3px;background:var(--bg2);color:var(--text2);width:fit-content}
-  .card .hot{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-top:2px;background:var(--hot-bg);color:var(--hot-text);width:fit-content;font-weight:600}
-  .card .del{position:absolute;top:7px;right:7px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;opacity:0;transition:opacity .15s;padding:3px;border-radius:6px;line-height:1}
-  .card:hover .del{opacity:1}
-  .card .del:hover{color:var(--danger);background:var(--bg2)}
-  .add-card{background:transparent;border:0.5px dashed var(--border2);border-radius:var(--radius-lg);padding:14px 12px;cursor:pointer;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:95px;transition:all .15s;font-family:inherit;-webkit-tap-highlight-color:transparent}
-  .add-card i{font-size:22px}
-  .add-card:hover{background:var(--bg);border-color:var(--info-border);color:var(--info-text)}
-  .empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px}
-  .empty i{font-size:32px;display:block;margin-bottom:8px}
-  .fab{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--info-text);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:transform .15s;z-index:20}
-  .fab:active{transform:scale(0.93)}
-  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:flex-end;justify-content:center}
-  @media(min-width:500px){.modal-bg{align-items:center;padding:1rem}}
-  .modal-bg.open{display:flex}
-  .modal{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:1.5rem 1.25rem 2rem;width:100%;max-width:400px;animation:slideUp .2s ease}
-  @media(min-width:500px){.modal{border-radius:var(--radius-xl);padding:1.5rem}}
-  @keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1.25rem}
-  @media(min-width:500px){.modal-handle{display:none}}
-  .modal h2{font-size:16px;font-weight:600;margin-bottom:1.1rem}
-  .field{margin-bottom:12px}
-  .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px}
-  .field input{width:100%;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:14px;color:var(--text);outline:none;font-family:inherit;transition:border-color .15s}
-  .field input:focus{border-color:var(--info-border)}
-  .emoji-row{display:flex;flex-wrap:wrap;gap:6px}
-  .ep{background:none;border:0.5px solid var(--border);border-radius:var(--radius);padding:5px 8px;cursor:pointer;font-size:20px;transition:background .1s;line-height:1}
-  .ep:hover,.ep.sel{background:var(--info-bg);border-color:var(--info-border)}
-  .mbtns{display:flex;gap:8px;margin-top:1.1rem}
-  .mbtns button{flex:1;padding:10px;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s}
-  .mbtns button:active{opacity:0.75}
-  #cancel-btn{background:var(--bg2);border:0.5px solid var(--border);color:var(--text2)}
-  #save-btn{background:var(--info-text);border:none;color:#fff}
-  .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;white-space:nowrap}
-  .toast.show{opacity:1}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text);min-height:100vh;}
+
+  /* INSTALL BANNER */
+  .install-banner{display:none;background:linear-gradient(135deg,#6c63ff,#8b5cf6);color:#fff;padding:12px 1rem;align-items:center;gap:10px;position:sticky;top:0;z-index:20;}
+  .install-banner.show{display:flex;}
+  .install-banner p{flex:1;font-size:13px;font-weight:500;}
+  .install-banner p span{display:block;font-size:11px;opacity:0.8;margin-top:2px;}
+  .install-banner button{background:rgba(255,255,255,0.25);border:0.5px solid rgba(255,255,255,0.4);color:#fff;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;}
+  .install-banner .close-btn{background:none;border:none;color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer;padding:0 4px;flex-shrink:0;}
+
+  header{background:var(--bg);border-bottom:0.5px solid var(--border);padding:0 1.25rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+  header h1{font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  header h1 i{font-size:20px;color:var(--info-text);}
+  .header-right{display:flex;align-items:center;gap:10px;}
+  #count-label{font-size:12px;color:var(--text3);}
+  .install-btn-small{background:var(--info-bg);border:0.5px solid var(--info-border);color:var(--info-text);padding:5px 12px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;display:none;font-family:inherit;}
+  .install-btn-small.show{display:block;}
+
+  main{max-width:820px;margin:0 auto;padding:1.25rem 1rem 5rem;}
+  .search-bar{display:flex;align-items:center;gap:8px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:0 12px;margin-bottom:1rem;}
+  .search-bar i{color:var(--text3);font-size:16px;}
+  .search-bar input{border:none;outline:none;background:transparent;font-size:14px;color:var(--text);padding:10px 0;width:100%;font-family:inherit;}
+  .search-bar input::placeholder{color:var(--text3);}
+  .cats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem;}
+  .cat-btn{background:var(--bg);border:0.5px solid var(--border);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:inherit;}
+  .cat-btn.active,.cat-btn:hover{background:var(--info-bg);border-color:var(--info-border);color:var(--info-text);}
+  .section-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin:1.25rem 0 .6rem;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;}
+  .card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:14px 12px;cursor:pointer;transition:border-color .15s,transform .1s;display:flex;flex-direction:column;gap:5px;position:relative;-webkit-tap-highlight-color:transparent;}
+  .card:hover{border-color:var(--border2);transform:translateY(-1px);}
+  .card:active{transform:scale(0.97);}
+  .card .emoji{font-size:24px;line-height:1;margin-bottom:2px;}
+  .card .name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .url{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .card .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-top:3px;background:var(--bg2);color:var(--text2);width:fit-content;}
+  .card .hot{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-top:2px;background:var(--hot-bg);color:var(--hot-text);width:fit-content;font-weight:600;}
+  .card .sponsored-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;margin-top:2px;background:#fff3e0;color:#e65100;width:fit-content;font-weight:600;}
+  .card.sponsored{border-color:rgba(230,81,0,0.3);background:linear-gradient(135deg,var(--bg),rgba(255,243,224,0.3));}
+  @media(prefers-color-scheme:dark){.card.sponsored{background:linear-gradient(135deg,var(--bg),rgba(100,40,0,0.2));}.card .sponsored-tag{background:#3d1a00;color:#ffb74d;}}
+  .card .del{position:absolute;top:7px;right:7px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;opacity:0;transition:opacity .15s;padding:3px;border-radius:6px;line-height:1;}
+  .card:hover .del{opacity:1;}
+  .card .del:hover{color:var(--danger);background:var(--bg2);}
+  .add-card{background:transparent;border:0.5px dashed var(--border2);border-radius:var(--radius-lg);padding:14px 12px;cursor:pointer;color:var(--text3);font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:95px;transition:all .15s;font-family:inherit;-webkit-tap-highlight-color:transparent;}
+  .add-card i{font-size:22px;}
+  .add-card:hover{background:var(--bg);border-color:var(--info-border);color:var(--info-text);}
+  .empty{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:var(--text3);font-size:14px;}
+  .empty i{font-size:32px;display:block;margin-bottom:8px;}
+  .fab{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--info-text);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:transform .15s;z-index:20;}
+  .fab:active{transform:scale(0.93);}
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:flex-end;justify-content:center;}
+  @media(min-width:500px){.modal-bg{align-items:center;padding:1rem;}}
+  .modal-bg.open{display:flex;}
+  .modal{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-xl) var(--radius-xl) 0 0;padding:1.5rem 1.25rem 2rem;width:100%;max-width:400px;animation:slideUp .2s ease;}
+  @media(min-width:500px){.modal{border-radius:var(--radius-xl);padding:1.5rem;}}
+  @keyframes slideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+  .modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 1.25rem;}
+  @media(min-width:500px){.modal-handle{display:none;}}
+  .modal h2{font-size:16px;font-weight:600;margin-bottom:1.1rem;}
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;}
+  .field input{width:100%;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:14px;color:var(--text);outline:none;font-family:inherit;transition:border-color .15s;}
+  .field input:focus{border-color:var(--info-border);}
+  .emoji-row{display:flex;flex-wrap:wrap;gap:6px;}
+  .ep{background:none;border:0.5px solid var(--border);border-radius:var(--radius);padding:5px 8px;cursor:pointer;font-size:20px;transition:background .1s;line-height:1;}
+  .ep:hover,.ep.sel{background:var(--info-bg);border-color:var(--info-border);}
+  .mbtns{display:flex;gap:8px;margin-top:1.1rem;}
+  .mbtns button{flex:1;padding:10px;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+  .mbtns button:active{opacity:0.75;}
+  #cancel-btn{background:var(--bg2);border:0.5px solid var(--border);color:var(--text2);}
+  #save-btn{background:var(--info-text);border:none;color:#fff;}
+  .toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;white-space:nowrap;}
+  .toast.show{opacity:1;}
+
+  /* OFFLINE BADGE */
+  .offline-bar{display:none;background:#ff6b6b;color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:500;}
+  .offline-bar.show{display:block;}
 </style>
 </head>
 <body>
+
+<!-- OFFLINE BAR -->
+<div class="offline-bar" id="offline-bar">📵 You are offline — app still works!</div>
+
+<!-- INSTALL BANNER -->
+<div class="install-banner" id="install-banner">
+  <p>📱 Add to Home Screen <span>Use it like a real app — no App Store needed!</span></p>
+  <button id="install-accept">Install Free</button>
+  <button class="close-btn" id="install-close">✕</button>
+</div>
+
 <header>
   <h1><i class="ti ti-rocket"></i> AI Tools Favourites</h1>
-  <span id="count-label"></span>
+  <div class="header-right">
+    <button class="install-btn-small" id="install-btn-small">📲 Install App</button>
+    <span id="count-label"></span>
+  </div>
 </header>
+
 <main>
   <div class="search-bar">
     <i class="ti ti-search"></i>
-    <input id="search" type="text" placeholder="Search tools…" />
+    <input id="search" type="text" placeholder="Search tools…"/>
   </div>
   <div class="cats" id="cats"></div>
   <div id="grid-wrap"></div>
 </main>
+
 <button class="fab" id="fab-btn" title="Add tool"><i class="ti ti-plus"></i></button>
 <div class="toast" id="toast"></div>
+
 <div class="modal-bg" id="modal-bg">
   <div class="modal">
     <div class="modal-handle"></div>
     <h2 id="modal-title">Add tool</h2>
     <div class="field"><label>Icon</label><div class="emoji-row" id="emoji-row"></div></div>
-    <div class="field"><label>Tool name</label><input id="f-name" type="text" placeholder="e.g. ChatGPT" autocomplete="off" /></div>
-    <div class="field"><label>URL</label><input id="f-url" type="url" placeholder="https://..." autocomplete="off" /></div>
-    <div class="field"><label>Category</label><input id="f-cat" type="text" placeholder="e.g. Chat, Image, Coding…" autocomplete="off" /></div>
+    <div class="field"><label>Tool name</label><input id="f-name" type="text" placeholder="e.g. ChatGPT" autocomplete="off"/></div>
+    <div class="field"><label>URL</label><input id="f-url" type="url" placeholder="https://..." autocomplete="off"/></div>
+    <div class="field"><label>Category</label><input id="f-cat" type="text" placeholder="e.g. Chat, Image, Coding…" autocomplete="off"/></div>
     <div class="mbtns"><button id="cancel-btn">Cancel</button><button id="save-btn">Save</button></div>
   </div>
 </div>
+
 <script>
 const EMOJIS=['🤖','✨','🧠','💬','🎨','🖼️','🔍','📝','💻','🎵','🎬','📊','🌐','⚡','🔧','📧','📷','🗂️','🧩','🚀','🎯','🛠️','📱','🌟','🔮','🎤','📈','🧬','🖊️','🗣️'];
+
+// SPONSORED TOOLS — replace href with your affiliate links when ready
+const SPONSORED=[
+  {id:'sp1',name:'Grammarly',url:'https://grammarly.com',emoji:'✏️',cat:'Writing',sponsored:true,hot:false},
+];
+
 const DEFAULTS=[
   {id:'1',name:'ChatGPT',url:'https://chat.openai.com',emoji:'🤖',cat:'Chat',hot:true},
   {id:'2',name:'Claude',url:'https://claude.ai',emoji:'✨',cat:'Chat',hot:true},
@@ -143,11 +181,56 @@ const DEFAULTS=[
 ];
 
 let tools=[],activeCat='All',editId=null,selEmoji=EMOJIS[0],searchQ='';
+let deferredPrompt=null;
+
 const gridWrap=document.getElementById('grid-wrap');
 const catsEl=document.getElementById('cats');
 const countEl=document.getElementById('count-label');
 const modalBg=document.getElementById('modal-bg');
 const emojiRow=document.getElementById('emoji-row');
+
+// PWA INSTALL
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('install-banner').classList.add('show');
+  document.getElementById('install-btn-small').classList.add('show');
+});
+
+function triggerInstall(){
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(r=>{
+    if(r.outcome==='accepted'){
+      document.getElementById('install-banner').classList.remove('show');
+      document.getElementById('install-btn-small').classList.remove('show');
+      showToast('App installed! 🎉');
+    }
+    deferredPrompt=null;
+  });
+}
+
+document.getElementById('install-accept').onclick=triggerInstall;
+document.getElementById('install-btn-small').onclick=triggerInstall;
+document.getElementById('install-close').onclick=()=>{
+  document.getElementById('install-banner').classList.remove('show');
+};
+
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('install-banner').classList.remove('show');
+  document.getElementById('install-btn-small').classList.remove('show');
+  showToast('App installed successfully! 🎉');
+});
+
+// OFFLINE DETECTION
+window.addEventListener('online',()=>document.getElementById('offline-bar').classList.remove('show'));
+window.addEventListener('offline',()=>document.getElementById('offline-bar').classList.add('show'));
+
+// SERVICE WORKER
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
 
 function load(){
   try{const s=localStorage.getItem('ai-fav-tools-v2');tools=s?JSON.parse(s):JSON.parse(JSON.stringify(DEFAULTS));}
@@ -172,24 +255,40 @@ function render(){
     catsEl.appendChild(b);
   });
   gridWrap.innerHTML='';
-  if(list.length===0){const g=document.createElement('div');g.className='grid';const e=document.createElement('div');e.className='empty';e.innerHTML='<i class="ti ti-bookmark"></i>No tools found';g.appendChild(e);gridWrap.appendChild(g);return;}
+  if(list.length===0){
+    const g=document.createElement('div');g.className='grid';
+    const e=document.createElement('div');e.className='empty';
+    e.innerHTML='<i class="ti ti-bookmark"></i>No tools found';
+    g.appendChild(e);gridWrap.appendChild(g);return;
+  }
   if(activeCat==='All'&&!searchQ){
+    // Show sponsored first
+    if(SPONSORED.length){
+      const lbl=document.createElement('div');lbl.className='section-label';lbl.textContent='⭐ Featured';gridWrap.appendChild(lbl);
+      const g=document.createElement('div');g.className='grid';
+      SPONSORED.forEach(t=>g.appendChild(makeCard(t)));
+      gridWrap.appendChild(g);
+    }
     const grouped={};
     list.forEach(t=>{const c=t.cat||'Other';if(!grouped[c])grouped[c]=[];grouped[c].push(t);});
     Object.entries(grouped).forEach(([cat,items])=>{
       const lbl=document.createElement('div');lbl.className='section-label';lbl.textContent=cat;gridWrap.appendChild(lbl);
       const g=document.createElement('div');g.className='grid';
-      items.forEach(t=>g.appendChild(makeCard(t)));g.appendChild(makeAddBtn());gridWrap.appendChild(g);
+      items.forEach(t=>g.appendChild(makeCard(t)));
+      g.appendChild(makeAddBtn());gridWrap.appendChild(g);
     });
   }else{
     const g=document.createElement('div');g.className='grid';
-    list.forEach(t=>g.appendChild(makeCard(t)));g.appendChild(makeAddBtn());gridWrap.appendChild(g);
+    list.forEach(t=>g.appendChild(makeCard(t)));
+    g.appendChild(makeAddBtn());gridWrap.appendChild(g);
   }
 }
 
 function makeCard(t){
-  const c=document.createElement('div');c.className='card';c.setAttribute('role','link');c.setAttribute('tabindex','0');
-  c.innerHTML=`<span class="emoji">${t.emoji||'🔧'}</span><span class="name">${t.name}</span><span class="url">${(t.url||'').replace(/^https?:\/\//,'')}</span>${t.cat?`<span class="tag">${t.cat}</span>`:''}${t.hot?`<span class="hot">🔥 Trending</span>`:''}<button class="del" title="Remove" onclick="removeT('${t.id}',event)"><i class="ti ti-x"></i></button>`;
+  const c=document.createElement('div');
+  c.className='card'+(t.sponsored?' sponsored':'');
+  c.setAttribute('role','link');c.setAttribute('tabindex','0');
+  c.innerHTML=`<span class="emoji">${t.emoji||'🔧'}</span><span class="name">${t.name}</span><span class="url">${(t.url||'').replace(/^https?:\/\//,'')}</span>${t.cat?`<span class="tag">${t.cat}</span>`:''}${t.sponsored?`<span class="sponsored-tag">⭐ Sponsored</span>`:t.hot?`<span class="hot">🔥 Trending</span>`:''}`+(t.sponsored?'':` <button class="del" title="Remove" onclick="removeT('${t.id}',event)"><i class="ti ti-x"></i></button>`);
   c.onclick=(e)=>{if(!e.target.closest('.del'))openTool(t.url);};
   c.onkeydown=(e)=>{if(e.key==='Enter')openTool(t.url);};
   return c;
@@ -201,7 +300,6 @@ function makeAddBtn(){
 }
 
 function openTool(url){if(!url)return;window.open(url.match(/^https?:\/\//)?url:'https://'+url,'_blank','noopener');}
-
 function removeT(id,e){e.stopPropagation();tools=tools.filter(t=>t.id!==id);save();render();showToast('Removed');}
 
 function openModal(id){
@@ -220,11 +318,12 @@ function openModal(id){
   modalBg.classList.add('open');setTimeout(()=>document.getElementById('f-name').focus(),100);
 }
 
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 document.getElementById('cancel-btn').onclick=()=>modalBg.classList.remove('open');
 document.getElementById('fab-btn').onclick=()=>openModal();
 modalBg.onclick=(e)=>{if(e.target===modalBg)modalBg.classList.remove('open');};
+
 document.getElementById('save-btn').onclick=()=>{
   const name=document.getElementById('f-name').value.trim();
   let url=document.getElementById('f-url').value.trim();
@@ -233,10 +332,12 @@ document.getElementById('save-btn').onclick=()=>{
   if(url&&!url.match(/^https?:\/\//))url='https://'+url;
   if(editId){const t=tools.find(x=>x.id===editId);if(t){t.name=name;t.url=url;t.cat=cat;t.emoji=selEmoji;}}
   else tools.push({id:Date.now().toString(),name,url,cat,emoji:selEmoji,hot:false});
-  save();render();modalBg.classList.remove('open');showToast(editId?'Updated!':'Added!');
+  save();render();modalBg.classList.remove('open');showToast(editId?'Updated!':'Added! ✅');
 };
+
 document.getElementById('f-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('save-btn').click();});
 document.getElementById('search').addEventListener('input',e=>{searchQ=e.target.value;render();});
+
 load();
 </script>
 </body>
