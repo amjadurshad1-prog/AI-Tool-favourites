@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>AI Tools Admin</title>
+<meta name="robots" content="noindex,nofollow"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+:root{--bg:#ffffff;--bg2:#f7f7f5;--bg3:#eeeeed;--text:#1a1a18;--text2:#6b6b67;--text3:#a3a39f;--border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);--accent:#6c63ff;--accent-bg:rgba(108,99,255,0.1);--accent-border:rgba(108,99,255,0.3);--danger:#e24b4a;--danger-bg:rgba(226,75,74,0.1);--success:#27ae60;--success-bg:rgba(39,174,96,0.1);--radius:10px;--radius-lg:16px;--radius-xl:20px;}
+[data-theme="dark"]{--bg:#18181b;--bg2:#1f1f23;--bg3:#2a2a2f;--text:#f4f3ff;--text2:#a09fbc;--text3:#6b6a80;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--accent:#8b85ff;--accent-bg:rgba(139,133,255,0.12);--accent-border:rgba(139,133,255,0.3);}
+*{box-sizing:border-box;margin:0;padding:0;transition:background-color .2s,color .15s;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.login-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-xl);padding:2rem 1.75rem;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.08);}
+.login-icon{font-size:40px;margin-bottom:1rem;}
+.login-card h1{font-size:20px;font-weight:700;margin-bottom:.4rem;}
+.login-card p{font-size:13px;color:var(--text2);margin-bottom:1.5rem;}
+.login-card input{width:100%;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:11px 14px;font-size:15px;color:var(--text);outline:none;font-family:inherit;text-align:center;letter-spacing:.15em;margin-bottom:12px;}
+.login-card input:focus{border-color:var(--accent-border);}
+.login-btn{width:100%;background:var(--accent);color:#fff;border:none;padding:12px;border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;}
+.login-btn:hover{opacity:.9;}
+.login-err{color:var(--danger);font-size:13px;margin-top:8px;display:none;}
+.login-err.show{display:block;}
+.login-hint{font-size:11px;color:var(--text3);margin-top:12px;}
+
+/* ADMIN */
+.admin-wrap{display:none;min-height:100vh;}
+.admin-wrap.show{display:block;}
+
+/* HEADER */
+header{background:var(--bg);border-bottom:0.5px solid var(--border);padding:0 1.25rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+header h1{font-size:16px;font-weight:700;display:flex;align-items:center;gap:7px;}
+header h1 i{color:var(--accent);font-size:18px;}
+.header-right{display:flex;align-items:center;gap:8px;}
+.hbtn{background:none;border:0.5px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:500;cursor:pointer;color:var(--text2);font-family:inherit;display:flex;align-items:center;gap:5px;}
+.hbtn:hover{background:var(--bg2);}
+.hbtn.danger{color:var(--danger);border-color:rgba(226,75,74,0.3);}
+.hbtn.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* STATS */
+.stats-row{display:flex;gap:10px;padding:1.25rem;overflow-x:auto;scrollbar-width:none;}
+.stats-row::-webkit-scrollbar{display:none;}
+.stat-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;flex:1;min-width:130px;text-align:center;}
+.stat-card .num{font-size:1.8rem;font-weight:800;color:var(--accent);line-height:1;}
+.stat-card .lbl{font-size:11px;color:var(--text3);margin-top:3px;}
+
+main{max-width:960px;margin:0 auto;padding:0 1rem 4rem;}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;}
+.toolbar input{flex:1;min-width:180px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:14px;color:var(--text);outline:none;font-family:inherit;}
+.toolbar input:focus{border-color:var(--accent-border);}
+.toolbar select{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:inherit;cursor:pointer;}
+.add-tool-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--radius);padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.add-tool-btn:hover{opacity:.9;}
+
+/* TABLE */
+.table-wrap{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;}
+.table-header{display:grid;grid-template-columns:40px 1fr 1fr 90px 80px 100px;gap:0;padding:10px 14px;background:var(--bg2);border-bottom:0.5px solid var(--border);font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.tool-row{display:grid;grid-template-columns:40px 1fr 1fr 90px 80px 100px;gap:0;padding:11px 14px;border-bottom:0.5px solid var(--border);align-items:center;transition:background .1s;}
+.tool-row:last-child{border-bottom:none;}
+.tool-row:hover{background:var(--bg2);}
+.tool-emoji{font-size:20px;text-align:center;}
+.tool-name{display:flex;flex-direction:column;gap:2px;padding-right:8px;}
+.tool-name strong{font-size:13px;font-weight:600;color:var(--text);}
+.tool-name span{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+.tool-url{font-size:11px;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:8px;max-width:180px;}
+.tool-cat .cat-badge{display:inline-block;font-size:10px;padding:3px 8px;border-radius:100px;background:var(--accent-bg);color:var(--accent);font-weight:500;}
+.tool-status{display:flex;flex-direction:column;gap:3px;}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:100px;font-weight:600;width:fit-content;}
+.badge.hot{background:#fff0e0;color:#c05c00;}
+.badge.sponsored{background:#fff3e0;color:#e65100;}
+[data-theme="dark"] .badge.hot{background:#3d2000;color:#ffb347;}
+[data-theme="dark"] .badge.sponsored{background:#3d1a00;color:#ffb74d;}
+.tool-actions{display:flex;gap:5px;justify-content:flex-end;}
+.act-btn{background:none;border:0.5px solid var(--border);border-radius:7px;padding:5px 8px;cursor:pointer;font-size:13px;color:var(--text2);font-family:inherit;transition:all .15s;}
+.act-btn:hover{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);}
+.act-btn.del:hover{background:var(--danger-bg);border-color:rgba(226,75,74,0.3);color:var(--danger);}
+.empty-row{text-align:center;padding:3rem;color:var(--text3);font-size:14px;}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-xl);padding:1.75rem;width:100%;max-width:460px;animation:popIn .2s ease;}
+@keyframes popIn{from{transform:scale(0.95);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal h2{font-size:17px;font-weight:700;margin-bottom:1.25rem;}
+.field{margin-bottom:13px;}
+.field label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:600;}
+.field input,.field select{width:100%;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px 12px;font-size:14px;color:var(--text);outline:none;font-family:inherit;}
+.field input:focus,.field select:focus{border-color:var(--accent-border);}
+.field .hint{font-size:11px;color:var(--text3);margin-top:4px;}
+.emoji-row{display:flex;flex-wrap:wrap;gap:6px;}
+.ep{background:none;border:0.5px solid var(--border);border-radius:8px;padding:5px 8px;cursor:pointer;font-size:20px;line-height:1;}
+.ep:hover,.ep.sel{background:var(--accent-bg);border-color:var(--accent-border);}
+.toggles{display:flex;gap:10px;flex-wrap:wrap;}
+.toggle-item{display:flex;align-items:center;gap:6px;cursor:pointer;font-size:13px;color:var(--text2);}
+.toggle-item input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;}
+.mbtns{display:flex;gap:8px;margin-top:1.25rem;}
+.mbtns button{flex:1;padding:11px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;}
+.mbtn-cancel{background:var(--bg2);border:0.5px solid var(--border);color:var(--text2);}
+.mbtn-save{background:var(--accent);border:none;color:#fff;}
+.mbtn-del{background:var(--danger-bg);border:0.5px solid rgba(226,75,74,0.3);color:var(--danger);}
+
+/* PASSWORD MODAL */
+.pw-modal{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-xl);padding:1.75rem;width:100%;max-width:360px;animation:popIn .2s ease;text-align:center;}
+.pw-modal h2{font-size:16px;font-weight:700;margin-bottom:.5rem;}
+.pw-modal p{font-size:13px;color:var(--text2);margin-bottom:1.25rem;}
+.pw-modal input{width:100%;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:11px;font-size:14px;color:var(--text);outline:none;font-family:inherit;text-align:center;letter-spacing:.1em;margin-bottom:10px;}
+.pw-modal .mbtns{margin-top:0;}
+
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 20px;border-radius:100px;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:300;white-space:nowrap;font-weight:500;}
+.toast.show{opacity:1;}
+
+@media(max-width:640px){
+  .table-header{grid-template-columns:36px 1fr 80px 90px;}
+  .tool-row{grid-template-columns:36px 1fr 80px 90px;}
+  .tool-url,.tool-cat{display:none;}
+  .table-header .th-url,.table-header .th-cat{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-wrap">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h1>Admin Panel</h1>
+    <p>AI Tools Favourites — Management Dashboard</p>
+    <input type="password" id="pw-input" placeholder="Enter password" autocomplete="current-password"/>
+    <button class="login-btn" id="login-btn">Login →</button>
+    <div class="login-err" id="login-err">❌ Wrong password. Try again.</div>
+    <p class="login-hint">Default password: <strong>admin123</strong> — change it after first login</p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-wrap" id="admin-wrap">
+  <header>
+    <h1><i class="ti ti-settings"></i> Admin Panel</h1>
+    <div class="header-right">
+      <button class="hbtn" id="theme-btn"><i class="ti ti-moon" id="theme-icon"></i> Theme</button>
+      <button class="hbtn" id="change-pw-btn"><i class="ti ti-key"></i> Password</button>
+      <button class="hbtn" id="view-app-btn"><i class="ti ti-external-link"></i> View App</button>
+      <button class="hbtn danger" id="logout-btn"><i class="ti ti-logout"></i> Logout</button>
+    </div>
+  </header>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="num" id="s-total">0</div><div class="lbl">Total Tools</div></div>
+    <div class="stat-card"><div class="num" id="s-cats">0</div><div class="lbl">Categories</div></div>
+    <div class="stat-card"><div class="num" id="s-trending">0</div><div class="lbl">Trending 🔥</div></div>
+    <div class="stat-card"><div class="num" id="s-sponsored">0</div><div class="lbl">Sponsored ⭐</div></div>
+  </div>
+
+  <main>
+    <div class="toolbar">
+      <input type="text" id="search" placeholder="🔍 Search tools…"/>
+      <select id="filter-cat">
+        <option value="All">All Categories</option>
+      </select>
+      <button class="add-tool-btn" id="add-tool-btn"><i class="ti ti-plus"></i> Add Tool</button>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-header">
+        <div></div>
+        <div>Tool</div>
+        <div class="th-url">Affiliate / URL</div>
+        <div class="th-cat">Category</div>
+        <div>Status</div>
+        <div style="text-align:right">Actions</div>
+      </div>
+      <div id="tools-list"></div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h2 id="modal-title">Add Tool</h2>
+    <div class="field"><label>Icon</label><div class="emoji-row" id="emoji-row"></div></div>
+    <div class="field">
+      <label>Tool Name</label>
+      <input id="f-name" type="text" placeholder="e.g. Grammarly"/>
+    </div>
+    <div class="field">
+      <label>URL / Affiliate Link</label>
+      <input id="f-url" type="url" placeholder="https://grammarly.com?ref=YOURCODE"/>
+      <div class="hint">💡 Paste your affiliate link here to earn money</div>
+    </div>
+    <div class="field">
+      <label>Category</label>
+      <input id="f-cat" type="text" placeholder="e.g. Chat, Image, Coding, Writing…"/>
+    </div>
+    <div class="field">
+      <label>Flags</label>
+      <div class="toggles">
+        <label class="toggle-item"><input type="checkbox" id="f-hot"/> 🔥 Mark as Trending</label>
+        <label class="toggle-item"><input type="checkbox" id="f-sponsored"/> ⭐ Mark as Sponsored</label>
+      </div>
+    </div>
+    <div class="mbtns">
+      <button class="mbtn-cancel" id="cancel-btn">Cancel</button>
+      <button class="mbtn-del" id="delete-btn" style="display:none">Delete</button>
+      <button class="mbtn-save" id="save-btn">Save ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-bg" id="pw-modal-bg">
+  <div class="pw-modal">
+    <h2>🔑 Change Password</h2>
+    <p>Set a new admin password</p>
+    <input type="password" id="new-pw" placeholder="New password"/>
+    <input type="password" id="confirm-pw" placeholder="Confirm password" style="margin-top:8px"/>
+    <div class="mbtns" style="margin-top:12px;">
+      <button class="mbtn-cancel" id="pw-cancel">Cancel</button>
+      <button class="mbtn-save" id="pw-save">Save Password</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const EMOJIS=['🤖','✨','🧠','💬','🎨','🖼️','🔍','📝','💻','🎵','🎬','📊','🌐','⚡','🔧','📧','📷','🗂️','🧩','🚀','🎯','🛠️','📱','🌟','🔮','🎤','📈','🧬','🖊️','🗣️'];
+const DEFAULT_PW = 'admin123';
+let tools=[], editId=null, selEmoji=EMOJIS[0], searchQ='', filterCat='All';
+
+// THEME
+let theme=localStorage.getItem('ai-theme')||'auto';
+function applyTheme(){
+  const isDark=theme==='dark'||(theme==='auto'&&window.matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme',isDark?'dark':'light');
+  document.getElementById('theme-icon').className=isDark?'ti ti-sun':'ti ti-moon';
+}
+applyTheme();
+document.getElementById('theme-btn').onclick=()=>{theme=theme==='dark'?'light':'dark';localStorage.setItem('ai-theme',theme);applyTheme();};
+
+// AUTH
+function getPassword(){return localStorage.getItem('ai-admin-pw')||DEFAULT_PW;}
+function isLoggedIn(){return sessionStorage.getItem('ai-admin-auth')==='yes';}
+
+function checkLogin(){
+  if(isLoggedIn()){showAdmin();}
+}
+
+document.getElementById('pw-input').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('login-btn').click();});
+document.getElementById('login-btn').onclick=()=>{
+  const val=document.getElementById('pw-input').value;
+  if(val===getPassword()){
+    sessionStorage.setItem('ai-admin-auth','yes');
+    document.getElementById('login-err').classList.remove('show');
+    showAdmin();
+  }else{
+    document.getElementById('login-err').classList.add('show');
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
+  }
+};
+
+document.getElementById('logout-btn').onclick=()=>{
+  sessionStorage.removeItem('ai-admin-auth');
+  document.getElementById('admin-wrap').classList.remove('show');
+  document.getElementById('login-wrap').style.display='flex';
+  document.getElementById('pw-input').value='';
+};
+
+document.getElementById('view-app-btn').onclick=()=>window.open('index.html','_blank');
+
+function showAdmin(){
+  document.getElementById('login-wrap').style.display='none';
+  document.getElementById('admin-wrap').classList.add('show');
+  loadTools();render();
+}
+
+// PASSWORD CHANGE
+document.getElementById('change-pw-btn').onclick=()=>{
+  document.getElementById('new-pw').value='';
+  document.getElementById('confirm-pw').value='';
+  document.getElementById('pw-modal-bg').classList.add('open');
+};
+document.getElementById('pw-cancel').onclick=()=>document.getElementById('pw-modal-bg').classList.remove('open');
+document.getElementById('pw-save').onclick=()=>{
+  const np=document.getElementById('new-pw').value.trim();
+  const cp=document.getElementById('confirm-pw').value.trim();
+  if(!np){showToast('Enter a password');return;}
+  if(np!==cp){showToast('Passwords do not match ❌');return;}
+  if(np.length<4){showToast('Password too short');return;}
+  localStorage.setItem('ai-admin-pw',np);
+  document.getElementById('pw-modal-bg').classList.remove('open');
+  showToast('Password updated! ✅');
+};
+
+// DATA
+function loadTools(){
+  try{const s=localStorage.getItem('ai-fav-tools-v2');tools=s?JSON.parse(s):[];}
+  catch(e){tools=[];}
+}
+function saveTools(){
+  try{localStorage.setItem('ai-fav-tools-v2',JSON.stringify(tools));}catch(e){}
+  showToast('Saved! Changes live now ✅');
+}
+
+function getCats(){return['All',...new Set(tools.map(t=>t.cat||'Other'))];}
+
+function updateStats(){
+  document.getElementById('s-total').textContent=tools.length;
+  document.getElementById('s-cats').textContent=new Set(tools.map(t=>t.cat||'Other')).size;
+  document.getElementById('s-trending').textContent=tools.filter(t=>t.hot).length;
+  document.getElementById('s-sponsored').textContent=tools.filter(t=>t.sponsored).length;
+}
+
+function render(){
+  updateStats();
+  // Update category filter
+  const sel=document.getElementById('filter-cat');
+  const prev=sel.value;
+  sel.innerHTML='';
+  getCats().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c===prev)o.selected=true;sel.appendChild(o);});
+
+  let list=tools;
+  if(filterCat!=='All')list=list.filter(t=>(t.cat||'Other')===filterCat);
+  if(searchQ)list=list.filter(t=>t.name.toLowerCase().includes(searchQ.toLowerCase())||(t.url||'').toLowerCase().includes(searchQ.toLowerCase()));
+
+  const container=document.getElementById('tools-list');
+  container.innerHTML='';
+
+  if(list.length===0){
+    const e=document.createElement('div');e.className='empty-row';e.innerHTML='<i class="ti ti-inbox" style="font-size:28px;display:block;margin-bottom:8px"></i>No tools found';
+    container.appendChild(e);return;
+  }
+
+  list.forEach(t=>{
+    const row=document.createElement('div');row.className='tool-row';
+    row.innerHTML=`
+      <div class="tool-emoji">${t.emoji||'🔧'}</div>
+      <div class="tool-name"><strong>${t.name}</strong><span>${(t.url||'').replace(/^https?:\/\//,'')}</span></div>
+      <div class="tool-url">${t.url||'—'}</div>
+      <div class="tool-cat"><span class="cat-badge">${t.cat||'Other'}</span></div>
+      <div class="tool-status">
+        ${t.hot?`<span class="badge hot">🔥 Trending</span>`:''}
+        ${t.sponsored?`<span class="badge sponsored">⭐ Sponsored</span>`:''}
+      </div>
+      <div class="tool-actions">
+        <button class="act-btn" onclick="openEdit('${t.id}')"><i class="ti ti-edit"></i></button>
+        <button class="act-btn del" onclick="deleteTool('${t.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function openEdit(id){
+  const t=tools.find(x=>x.id===id);if(!t)return;
+  editId=id;
+  document.getElementById('modal-title').textContent='Edit Tool';
+  document.getElementById('f-name').value=t.name||'';
+  document.getElementById('f-url').value=t.url||'';
+  document.getElementById('f-cat').value=t.cat||'';
+  document.getElementById('f-hot').checked=!!t.hot;
+  document.getElementById('f-sponsored').checked=!!t.sponsored;
+  selEmoji=t.emoji||EMOJIS[0];
+  buildEmojiRow();
+  document.getElementById('delete-btn').style.display='block';
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function deleteTool(id){
+  if(!confirm('Remove this tool?'))return;
+  tools=tools.filter(t=>t.id!==id);
+  saveTools();render();
+}
+
+document.getElementById('add-tool-btn').onclick=()=>{
+  editId=null;
+  document.getElementById('modal-title').textContent='Add Tool';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-url').value='';
+  document.getElementById('f-cat').value='';
+  document.getElementById('f-hot').checked=false;
+  document.getElementById('f-sponsored').checked=false;
+  selEmoji=EMOJIS[0];
+  buildEmojiRow();
+  document.getElementById('delete-btn').style.display='none';
+  document.getElementById('modal-bg').classList.add('open');
+  setTimeout(()=>document.getElementById('f-name').focus(),100);
+};
+
+function buildEmojiRow(){
+  const row=document.getElementById('emoji-row');row.innerHTML='';
+  EMOJIS.forEach(em=>{
+    const b=document.createElement('button');b.className='ep'+(em===selEmoji?' sel':'');b.textContent=em;b.type='button';
+    b.onclick=()=>{selEmoji=em;row.querySelectorAll('.ep').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');};
+    row.appendChild(b);
+  });
+}
+
+document.getElementById('cancel-btn').onclick=()=>document.getElementById('modal-bg').classList.remove('open');
+document.getElementById('delete-btn').onclick=()=>{
+  if(!editId)return;
+  if(!confirm('Delete this tool permanently?'))return;
+  tools=tools.filter(t=>t.id!==editId);
+  saveTools();render();
+  document.getElementById('modal-bg').classList.remove('open');
+};
+
+document.getElementById('save-btn').onclick=()=>{
+  const name=document.getElementById('f-name').value.trim();
+  let url=document.getElementById('f-url').value.trim();
+  const cat=document.getElementById('f-cat').value.trim()||'Other';
+  const hot=document.getElementById('f-hot').checked;
+  const sponsored=document.getElementById('f-sponsored').checked;
+  if(!name){document.getElementById('f-name').focus();showToast('Please enter a tool name');return;}
+  if(url&&!url.match(/^https?:\/\//))url='https://'+url;
+  if(editId){
+    const t=tools.find(x=>x.id===editId);
+    if(t){t.name=name;t.url=url;t.cat=cat;t.emoji=selEmoji;t.hot=hot;t.sponsored=sponsored;}
+  }else{
+    tools.push({id:Date.now().toString(),name,url,cat,emoji:selEmoji,hot,sponsored});
+  }
+  saveTools();render();
+  document.getElementById('modal-bg').classList.remove('open');
+};
+
+document.getElementById('search').addEventListener('input',e=>{searchQ=e.target.value;render();});
+document.getElementById('filter-cat').addEventListener('change',e=>{filterCat=e.target.value;render();});
+document.getElementById('modal-bg').onclick=(e)=>{if(e.target===document.getElementById('modal-bg'))document.getElementById('modal-bg').classList.remove('open');};
+document.getElementById('pw-modal-bg').onclick=(e)=>{if(e.target===document.getElementById('pw-modal-bg'))document.getElementById('pw-modal-bg').classList.remove('open');};
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+checkLogin();
+</script>
+</body>
+</html>
